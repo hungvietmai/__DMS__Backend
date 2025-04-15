@@ -1,0 +1,43 @@
+{
+  "name": "Node.js & Mongo DB",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint", // ESLint
+        "esbenp.prettier-vscode", // Prettier
+        "VisualStudioExptTeam.vscodeintellicode", // IntelliCode
+        "ms-azuretools.vscode-docker", // Docker extension
+        "mongodb.mongodb-vscode", // MongoDB extension
+        "PKief.material-icon-theme" // Material Icon
+      ],
+
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        },
+        "eslint.validate": [
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact"
+        ],
+        "prettier.requireConfig": true,
+        "workbench.iconTheme": "material-icon-theme"
+      }
+    }
+  },
+
+  // Automatically forward commonly used ports
+  "forwardPorts": [3000, 27017],
+
+  // Runs after the container is created – useful for installing node packages
+  "postCreateCommand": "npm install"
+
+  // Optional: Run container as root if needed
+  // "remoteUser": "root"
+}
