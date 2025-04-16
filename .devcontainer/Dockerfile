@@ -21,4 +21,6 @@ RUN . /etc/os-release \
 # [Optional] Uncomment if you want to install more global node modules
 # RUN su node -c "npm install -g <your-package-list-here>"
 
-RUN npm install -g @nestjs/cli
+RUN su node -c "npm install -g npm@latest"
+
+RUN su node -c "npm install -g @nestjs/cli"
