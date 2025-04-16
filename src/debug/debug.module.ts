@@ -9,7 +9,7 @@ export class DebugModule extends ConfigurableModuleClass {
   public static override forRoot(options: typeof OPTIONS_TYPE): DynamicModule {
     const module = super.forRoot(options);
 
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env['NODE_ENV'] !== 'production') {
       (module.imports ??= []).push(DiscoveryModule);
       (module.providers ??= []).push(DebugExplorer);
     }

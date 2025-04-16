@@ -1,10 +1,9 @@
 import type { Request } from 'express';
-import { ParamsDictionary } from 'express-serve-static-core';
+import { IncomingMessage } from 'http';
 import { nanoid } from 'nanoid';
 import type { Params } from 'nestjs-pino';
 import { multistream } from 'pino';
 import type { ReqId } from 'pino-http';
-import { ParsedQs } from 'qs';
 
 const passUrl = new Set(['/health', '/graphql']);
 
@@ -15,8 +14,11 @@ export const loggerOptions: Params = {
       // Change time value in production log.
       // timestamp: stdTimeFunctions.isoTime,
       quietReqLogger: true,
-      genReqId: (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>): ReqId => req.header('X-Request-Id') ?? nanoid(),
-      ...(process.env.NODE_ENV === 'production'
+      genReqId: (req: IncomingMessage): ReqId => {
+        const expressReq = req as Request;
+        return expressReq.header('X-Request-Id') ?? nanoid();
+      },
+      ...(process.env['NODE_ENV'] === 'production'
         ? {}
         : {
           level: 'debug',
@@ -27,7 +29,10 @@ export const loggerOptions: Params = {
           },
         }),
       autoLogging: {
-        ignore: (req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>) => passUrl.has(req.originalUrl),
+        ignore: (req: IncomingMessage) => {
+          const expressReq = req as Request;
+          return passUrl.has(expressReq.originalUrl);
+        },
       },
       customProps: (req) => (<Request>req).customProps,
     },

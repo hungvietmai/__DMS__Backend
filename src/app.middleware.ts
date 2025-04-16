@@ -7,13 +7,13 @@ import { RedisStore } from 'connect-redis';
 import Redis from 'ioredis';
 
 export function middleware(app: INestApplication): INestApplication {
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isProduction = process.env['NODE_ENV'] === 'production';
 
   // Redis client
   const redisClient = new Redis({
-    host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT || '6379', 10),
-    password: process.env.REDIS_PASSWORD || undefined,
+    host: process.env['REDIS_HOST'] || 'localhost',
+    port: parseInt(process.env['REDIS_PORT'] || '6379', 10),
+    password: process.env['REDIS_PASSWORD'] || undefined,
   });
 
   app.use(compression());
@@ -21,7 +21,7 @@ export function middleware(app: INestApplication): INestApplication {
   app.use(
     session({
       store: new RedisStore({ client: redisClient }),
-      secret: process.env.SESSION_SECRET || 'dev-secret',
+      secret: process.env['SESSION_SECRET'] || 'dev-secret',
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -41,14 +41,14 @@ export function middleware(app: INestApplication): INestApplication {
       isProduction
         ? {} // Enable all protections in prod
         : {
-            contentSecurityPolicy: false,
-            crossOriginEmbedderPolicy: false,
-          },
+          contentSecurityPolicy: false,
+          crossOriginEmbedderPolicy: false,
+        },
     ),
   );
 
   app.enableCors({
-    origin: process.env.FRONTEND_URL?.split(',') || '*',
+    origin: process.env['FRONTEND_URL']?.split(',') || '*',
     credentials: true,
   });
 
