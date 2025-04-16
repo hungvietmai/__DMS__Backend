@@ -1,13 +1,13 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { type CanActivate, type ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import type { Request } from 'express';
+import type { FastifyRequest } from 'fastify';
 
 @Injectable()
 export class AuthenticatedGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   public canActivate(context: ExecutionContext): boolean {
-    // https://github.com/nestjs/nest/issues/964#issuecomment-480834786
+    // Check if the route is public based on metadata
     const isPublic = this.reflector.get<boolean>('isPublic', context.getHandler());
     if (isPublic) {
       return true;
@@ -17,7 +17,7 @@ export class AuthenticatedGuard implements CanActivate {
     return request.isAuthenticated();
   }
 
-  public getRequest(context: ExecutionContext): Request {
-    return context.switchToHttp().getRequest<Request>();
+  public getRequest(context: ExecutionContext): FastifyRequest {
+    return context.switchToHttp().getRequest<FastifyRequest>();
   }
 }

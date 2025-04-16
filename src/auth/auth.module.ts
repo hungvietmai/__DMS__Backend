@@ -1,13 +1,12 @@
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
-import { AuthSerializer } from './auth.serializer';
-import { AuthService } from './auth.service';
-import { LocalStrategy, JwtStrategy, JwtVerifyStrategy } from './strategies';
-import { UserModule } from '../shared/user';
+import { AuthController } from './auth.controller.js';
+import { AuthService } from './auth.service.js';
+import { LocalStrategy, JwtStrategy } from './strategies/index.js';
+import { UserModule } from '../user/index.js';
 
-@Global()
 @Module({
   imports: [
     UserModule,
@@ -19,7 +18,8 @@ import { UserModule } from '../shared/user';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService, AuthSerializer, LocalStrategy, JwtStrategy, JwtVerifyStrategy],
+  controllers: [AuthController],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

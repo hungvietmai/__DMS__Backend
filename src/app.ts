@@ -1,40 +1,59 @@
-import { Logger as NestLogger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import type { NestExpressApplication } from '@nestjs/platform-express';
-import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
+import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Logger as PinoLogger, LoggerErrorInterceptor } from 'nestjs-pino';
 
-import { middleware } from './app.middleware';
-import { AppModule } from './app.module';
-
-declare const module: any;
+import { middleware } from './app.middleware.js';
+import { AppModule } from './app.module.js';
+import { genReqId } from './config/index.js';
+import metadata from './metadata.js';
 
 async function bootstrap(): Promise<string> {
-  const isProduction = process.env['NODE_ENV'] === 'production';
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    bufferLogs: true,
-  });
+  const isProduction = process.env.NODE_ENV === 'production';
 
-  app.useLogger(app.get(Logger));
+  const options = new DocumentBuilder()
+    .setTitle('OpenAPI Documentation')
+    .setDescription('The sample API description')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter({
+      trustProxy: isProduction,
+      // Fastify has pino built in, but it use nestjs-pino, so we disable the logger.
+      logger: false,
+      // https://github.com/iamolegga/nestjs-pino/issues/1351
+      genReqId,
+    }),
+    {
+      bufferLogs: isProduction,
+    },
+  );
+
+  await SwaggerModule.loadPluginMetadata(metadata);
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('doc-api', app, document);
+
+  app.useLogger(app.get(PinoLogger));
   app.useGlobalInterceptors(new LoggerErrorInterceptor());
 
-  if (isProduction) {
-    app.enable('trust proxy');
-  }
-
-  // Express Middleware
-  middleware(app);
+  // Fastify Middleware
+  await middleware(app);
 
   app.enableShutdownHooks();
-  await app.listen(process.env['PORT'] || 3000);
+  await app.listen(process.env.PORT || 3000);
 
-  return await app.getUrl();
+  return app.getUrl();
 }
 
-void (async (): Promise<void> => {
+void (async () => {
   try {
     const url = await bootstrap();
-    NestLogger.log(url, 'Bootstrap');
+    Logger.log(url, 'Bootstrap');
   } catch (error) {
-    NestLogger.error(error, 'Bootstrap');
+    Logger.error(error, 'Bootstrap');
   }
 })();

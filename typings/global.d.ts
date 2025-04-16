@@ -1,25 +1,29 @@
-import type { Payload } from '../src/auth';
+import type { User } from '../src/user/index.ts';
 
 export declare global {
-    type AnyObject = Record<string, unknown>;
+  namespace NodeJS {
+    interface ProcessEnv {
+      NODE_ENV: string;
+      PORT: string;
 
-    namespace NodeJS {
-        interface ProcessEnv {
-            NODE_ENV: string;
-            PORT: string;
-
-            MONGO_URI: string;
-
-            JWT_SECRET: string;
-            JWT_REFRESH_SECRET: string;
-        }
+      MONGO_URI: string;
+      JWT_SECRET: string;
+      JWT_REFRESH_SECRET: string;
     }
+  }
+}
 
-    namespace Express {
-        interface Request {
-            // customProps of pino-http
-            customProps: object;
-        }
-        interface User extends Payload { }
-    }
+declare module 'http' {
+  interface IncomingMessage {
+    // customProps of pino-http
+    customProps: object;
+    // Request.prototype of fastify
+    originalUrl: string;
+  }
+}
+
+declare module 'fastify' {
+  interface FastifyRequest {
+    user: User;
+  }
 }

@@ -1,44 +1,31 @@
-import type { Request } from 'express';
-import { IncomingMessage } from 'http';
-import { nanoid } from 'nanoid';
+import type { RawRequestDefaultExpression, RawServerBase } from 'fastify';
 import type { Params } from 'nestjs-pino';
+import { randomUUID } from 'node:crypto';
 import { multistream } from 'pino';
-import type { ReqId } from 'pino-http';
 
-const passUrl = new Set(['/health', '/graphql']);
+const passUrl = new Set(['/health']);
 
-export const loggerOptions: Params = {
+export const genReqId = (req: RawRequestDefaultExpression<RawServerBase>) => <string>req.headers['X-Request-Id'] || randomUUID();
+export const loggerOptions = <Params>{
   pinoHttp: [
     {
-      // https://getpino.io/#/docs/api?id=timestamp-boolean-function
-      // Change time value in production log.
-      // timestamp: stdTimeFunctions.isoTime,
       quietReqLogger: true,
-      genReqId: (req: IncomingMessage): ReqId => {
-        const expressReq = req as Request;
-        return expressReq.header('X-Request-Id') ?? nanoid();
-      },
-      ...(process.env['NODE_ENV'] === 'production'
+      ...(process.env.NODE_ENV === 'production'
         ? {}
         : {
-          level: 'debug',
-          // https://github.com/pinojs/pino-pretty
-          transport: {
-            target: 'pino-pretty',
-            options: { sync: true, singleLine: true },
-          },
-        }),
+            level: 'debug',
+            transport: {
+              target: 'pino-pretty',
+              options: { sync: true, singleLine: true },
+            },
+          }),
       autoLogging: {
-        ignore: (req: IncomingMessage) => {
-          const expressReq = req as Request;
-          return passUrl.has(expressReq.originalUrl);
-        },
+        ignore: (req) => passUrl.has(req.originalUrl),
       },
-      customProps: (req) => (<Request>req).customProps,
+      customProps: (req) => req.customProps,
     },
     multistream(
       [
-        // https://getpino.io/#/docs/help?id=log-to-different-streams
         { level: 'debug', stream: process.stdout },
         { level: 'error', stream: process.stderr },
         { level: 'fatal', stream: process.stderr },

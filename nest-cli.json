@@ -1,19 +1,18 @@
 {
-  "$schema": "https://json.schemastore.org/nest-cli",
-  "entryFile": "app",
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
+  "entryFile": "app",
   "compilerOptions": {
+    "tsConfigPath": "tsconfig.build.json",
+    "deleteOutDir": true,
     "builder": "swc",
     "typeCheck": true,
-    "deleteOutDir": true,
-    "plugins": [
-      {
-        "name": "@nestjs/swagger",
-        "options": {
-          "introspectComments": true
-        }
+    "plugins": [{
+      "name": "@nestjs/swagger",
+      "options": {
+        "introspectComments": true,
+        "esmCompatible": true
       }
-    ]
+    }]
   }
 }

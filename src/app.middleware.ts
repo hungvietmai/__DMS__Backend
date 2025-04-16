@@ -1,56 +1,28 @@
+import compression from '@fastify/compress';
+import cookie from '@fastify/cookie';
+import helmet from '@fastify/helmet';
+import { Authenticator } from '@fastify/passport';
+import session from '@fastify/session';
 import type { INestApplication } from '@nestjs/common';
-import compression from 'compression';
-import session from 'express-session';
-import helmet from 'helmet';
-import passport from 'passport';
-import { RedisStore } from 'connect-redis';
-import Redis from 'ioredis';
+import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 
-export function middleware(app: INestApplication): INestApplication {
-  const isProduction = process.env['NODE_ENV'] === 'production';
+export async function middleware(app: NestFastifyApplication): Promise<INestApplication> {
+  const isProduction = process.env.NODE_ENV === 'production';
 
-  // Redis client
-  const redisClient = new Redis({
-    host: process.env['REDIS_HOST'] || 'localhost',
-    port: parseInt(process.env['REDIS_PORT'] || '6379', 10),
-    password: process.env['REDIS_PASSWORD'] || undefined,
+  await app.register(compression);
+  await app.register(cookie);
+  await app.register(session, {
+    // Requires 'store' setup for production
+    secret: 'nEsTjS-pRoJeCt-PeRfOrMaNcE-tEsTeD',
+    rolling: true,
+    saveUninitialized: true,
+    cookie: { secure: isProduction },
   });
 
-  app.use(compression());
-
-  app.use(
-    session({
-      store: new RedisStore({ client: redisClient }),
-      secret: process.env['SESSION_SECRET'] || 'dev-secret',
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        httpOnly: true,
-        secure: isProduction,
-        maxAge: 1000 * 60 * 60 * 24, // 1 day
-        sameSite: isProduction ? 'lax' : 'strict',
-      },
-    }),
-  );
-
-  app.use(passport.initialize());
-  app.use(passport.session());
-
-  app.use(
-    helmet(
-      isProduction
-        ? {} // Enable all protections in prod
-        : {
-          contentSecurityPolicy: false,
-          crossOriginEmbedderPolicy: false,
-        },
-    ),
-  );
-
-  app.enableCors({
-    origin: process.env['FRONTEND_URL']?.split(',') || '*',
-    credentials: true,
-  });
+  const passport = new Authenticator();
+  await app.register(passport.initialize());
+  await app.register(passport.secureSession());
+  await app.register(helmet);
 
   return app;
 }
