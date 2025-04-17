@@ -9,7 +9,7 @@ export class LoggerContextMiddleware implements NestMiddleware {
   constructor(
     private readonly logger: PinoLogger,
     private auth: AuthService,
-  ) { }
+  ) {}
 
   public use(req: FastifyRequest, _res: FastifyReply, next: () => void): void {
     const authHeader = req.headers.authorization;

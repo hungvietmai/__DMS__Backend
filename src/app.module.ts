@@ -4,10 +4,12 @@ import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { LoggerModule } from 'nestjs-pino';
 
-import { AuthModule } from './auth/auth.module.js';
+import { AuthModule } from './auth/index.js';
 import { CommonModule, ExceptionsFilter, LoggerContextMiddleware } from './common/index.js';
 import { configuration, loggerOptions } from './config/index.js';
-import { HealthModule } from './health/health.module.js';
+import { DatabaseModule } from './database/index.js';
+import { HealthModule } from './health/index.js';
+import { UserModule } from './shared/user/index.js';
 
 @Module({
   imports: [
@@ -30,6 +32,10 @@ import { HealthModule } from './health/health.module.js';
     HealthModule,
     // Authentication
     AuthModule,
+
+    DatabaseModule,
+
+    UserModule,
   ],
   providers: [
     {

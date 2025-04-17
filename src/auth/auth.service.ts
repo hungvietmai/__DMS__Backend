@@ -25,7 +25,7 @@ export class AuthService {
     };
   }
 
-  public async validateUser(username: string, password: string): Promise<User | null> {
+  public async validateUser(username: string, password: string): Promise<Payload | null> {
     const user = await this.user.fetch(username);
 
     if (user.password === password) {

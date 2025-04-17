@@ -49,3 +49,5 @@ volumes:
 
 networks:
   backend:
+    driver: bridge
+    attachable: true 
