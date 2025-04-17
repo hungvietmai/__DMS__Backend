@@ -1,4 +1,4 @@
-import type { User } from '../src/user/index.ts';
+import type { User } from '../src/shared/user/index.ts';
 
 export declare global {
   namespace NodeJS {
@@ -24,6 +24,6 @@ declare module 'http' {
 
 declare module 'fastify' {
   interface FastifyRequest {
-    user: User;
+    user?: User;
   }
 }

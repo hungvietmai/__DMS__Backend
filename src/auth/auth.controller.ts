@@ -1,9 +1,9 @@
-import { Controller, Get, Post, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
 import type { FastifyRequest } from 'fastify';
 
-import type { Payload } from './auth.interface.js';
 import { AuthService } from './auth.service.js';
 import { JwtAuthGuard, LocalAuthGuard } from './guards/index.js';
+import type { User } from '../shared/user/index.js';
 
 @Controller()
 export class AuthController {
@@ -12,12 +12,20 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   public login(@Req() req: FastifyRequest): { access_token: string } {
-    return this.auth.login(req.user);
+    const user = req.user;
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    return this.auth.login(user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('auth/check')
-  public check(@Req() req: FastifyRequest): Payload {
-    return req.user;
+  public check(@Req() req: FastifyRequest): User {
+    const user = req.user;
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    return user;
   }
 }

@@ -13,9 +13,9 @@ async function bootstrap(): Promise<string> {
   const isProduction = process.env.NODE_ENV === 'production';
 
   const options = new DocumentBuilder()
-    .setTitle('OpenAPI Documentation')
-    .setDescription('The sample API description')
-    .setVersion('1.0')
+    .setTitle('DMS API Documentation')
+    .setDescription('Dorm Management System API Documentation')
+    .setVersion('0.1')
     .addBearerAuth()
     .build();
 

@@ -9,7 +9,7 @@
     "node": ">=20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "lint": "eslint",
+    "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\" --cache",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "build": "nest build",
     "start": "node dist/app",

@@ -1,8 +1,16 @@
-import type { User } from '../user/index.js';
+export interface JwtSign {
+  access_token: string;
+  refresh_token: string;
+}
 
 export interface JwtPayload {
   sub: string;
   username: string;
+  roles: string[];
 }
 
-export type Payload = Omit<User, 'email'>;
+export interface Payload {
+  userId: string;
+  username: string;
+  roles: string[];
+}
