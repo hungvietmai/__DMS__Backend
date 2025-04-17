@@ -7,12 +7,17 @@
     "deleteOutDir": true,
     "builder": "swc",
     "typeCheck": true,
-    "plugins": [{
-      "name": "@nestjs/swagger",
-      "options": {
-        "introspectComments": true,
-        "esmCompatible": true
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": {
+          "introspectComments": true,
+          "esmCompatible": true
+        }
       }
-    }]
+    ]
+  },
+  "watchOptions": {
+    "ignored": ["**/node_modules/**", "**/*.spec.ts", "dist/**"]
   }
 }
