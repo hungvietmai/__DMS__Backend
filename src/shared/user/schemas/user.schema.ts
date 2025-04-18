@@ -1,6 +1,6 @@
-import { Student } from '@/core/student/schemas/student.schema.js';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { Student } from '../../../core/student/schemas/student.schema.js';
 
 @Schema({ timestamps: true })
 export class User {

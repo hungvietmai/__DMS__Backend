@@ -7,7 +7,7 @@ import { UserService } from '../shared/user/user.service.js';
 import type { User } from '../shared/user/schemas/user.schema.js';
 import { LoginDto } from './dto/login.dto.js';
 import type { RegisterDto } from './dto/register.dto.js';
-import { StudentService } from '@/core/student/student.service.js';
+import { StudentService } from '../core/student/student.service.js';
 
 @Injectable()
 export class AuthService {

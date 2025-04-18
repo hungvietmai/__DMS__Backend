@@ -38,8 +38,5 @@ export class RegisterDto {
     email!: string;
 
     @MinLength(8)
-    @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/, {
-        message: 'password too weak',
-    })
     password!: string;
 }

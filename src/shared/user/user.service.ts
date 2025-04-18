@@ -3,8 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { hash as bcryptHash, verify as bcryptVerify } from '@node-rs/bcrypt';
 import { User, type UserDocument } from './schemas/user.schema.js';
-import { Student, type StudentDocument } from '@/core/student/schemas/student.schema.js';
 import type { CreateUserDto } from './dto/create-user.dto.js';
+import { Student, type StudentDocument } from '../../core/student/schemas/student.schema.js';
 
 
 @Injectable()

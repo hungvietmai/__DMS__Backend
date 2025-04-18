@@ -4,13 +4,13 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { AuthController } from './auth.controller.js';
 import { AuthService } from './auth.service.js';
-import { JwtAuthGuard, JwtStrategy, LocalAuthGuard, LocalStrategy } from './index.js';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from '@/shared/user/schemas/user.schema.js';
-import { Student, StudentSchema } from '@/core/student/schemas/student.schema.js';
-import { UserModule } from '@/shared/user/user.module.js';
-import { StudentModule } from '@/core/student/student.module.js';
-
+import { User, UserSchema } from '../shared/user/schemas/user.schema.js';
+import { Student, StudentSchema } from '../core/student/schemas/student.schema.js';
+import { UserModule } from '../shared/user/user.module.js';
+import { StudentModule } from '../core/student/student.module.js';
+import { JwtStrategy, LocalStrategy } from './strategies/index.js';
+import { JwtAuthGuard, LocalAuthGuard } from './guards/index.js';
 
 @Module({
   imports: [
