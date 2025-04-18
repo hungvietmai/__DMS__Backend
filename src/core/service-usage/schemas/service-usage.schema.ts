@@ -7,9 +7,6 @@ export class ServiceUsage {
     @Prop({ type: Types.ObjectId, ref: Student.name, required: true })
     studentId!: Types.ObjectId;
 
-    @Prop({ required: true, uppercase: true })
-    serviceCode!: string;
-
     @Prop({ default: Date.now })
     usedAt!: Date;
 
@@ -18,8 +15,15 @@ export class ServiceUsage {
 
     @Prop({ min: 0 })
     amount!: number;
+
+    @Prop({ required: true })
+    serviceName!: string;
+
+    @Prop({ required: true, min: 0 })
+    unitPriceSnapshot!: number;
 }
 
 export type ServiceUsageDocument = HydratedDocument<ServiceUsage>;
 export const ServiceUsageSchema = SchemaFactory.createForClass(ServiceUsage);
+
 ServiceUsageSchema.index({ studentId: 1, usedAt: 1 });
