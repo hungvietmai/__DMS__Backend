@@ -2,23 +2,23 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { type HydratedDocument, Types } from 'mongoose';
 
 @Schema({
-    collection: 'guestVisits',
-    timestamps: { createdAt: true, updatedAt: false },
+  collection: 'guestVisits',
+  timestamps: { createdAt: true, updatedAt: false },
 })
 export class GuestVisit {
-    @Prop({ required: true, match: /^\d{9,12}$/ })
-    guestIdCard!: string;
+  @Prop({ required: true, match: /^\d{9,12}$/ })
+  guestIdCard!: string;
 
-    @Prop({ required: true })
-    guestName!: string;
+  @Prop({ required: true })
+  guestName!: string;
 
-    @Prop() guestDob?: Date;
+  @Prop() guestDob?: Date;
 
-    @Prop({ type: Types.ObjectId, ref: 'Student', required: true })
-    studentId!: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'Student', required: true })
+  studentId!: Types.ObjectId;
 
-    @Prop({ required: true })
-    visitedAt!: Date;
+  @Prop({ required: true })
+  visitedAt!: Date;
 }
 
 export type GuestVisitDocument = HydratedDocument<GuestVisit>;

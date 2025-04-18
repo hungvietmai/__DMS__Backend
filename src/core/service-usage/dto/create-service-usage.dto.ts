@@ -1,29 +1,22 @@
-import {
-    IsMongoId,
-    IsNotEmpty,
-    IsNumber,
-    Min,
-    IsOptional,
-    IsDateString,
-} from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsNumber, Min, IsOptional, IsDateString } from 'class-validator';
 
 export class CreateServiceUsageDto {
-    @IsMongoId()
-    studentId!: string;
+  @IsMongoId()
+  studentId!: string;
 
-    @IsNotEmpty()
-    serviceName!: string;
+  @IsNotEmpty()
+  serviceName!: string;
 
-    @IsNumber()
-    @Min(0)
-    unitPriceSnapshot!: number;
+  @IsNumber()
+  @Min(0)
+  unitPriceSnapshot!: number;
 
-    @IsOptional()
-    @IsDateString()
-    usedAt?: string;
+  @IsOptional()
+  @IsDateString()
+  usedAt?: string;
 
-    @IsOptional()
-    @IsNumber()
-    @Min(1)
-    quantity?: number;
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  quantity?: number;
 }

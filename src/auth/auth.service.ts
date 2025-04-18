@@ -11,7 +11,7 @@ export class AuthService {
     private jwt: JwtService,
     private user: UserService,
     private config: ConfigService,
-  ) { }
+  ) {}
 
   public login(user: User): { access_token: string } {
     const payload: JwtPayload = {

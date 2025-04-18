@@ -3,5 +3,5 @@ export interface User {
   name: string;
   email: string;
   roles: string[];
-  hashPassword: string
+  hashPassword: string;
 }
