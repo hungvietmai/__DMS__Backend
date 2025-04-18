@@ -3,11 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import type { JwtPayload, JwtSign, Payload } from './auth.interface.js';
-import { UserService } from '../shared/user/user.service.js';
-import type { User } from '../shared/user/schemas/user.schema.js';
 import { LoginDto } from './dto/login.dto.js';
 import type { RegisterDto } from './dto/register.dto.js';
+import type { StudentResponseDto } from '../core/student/dto/student-response.dto.js';
 import { StudentService } from '../core/student/student.service.js';
+import type { UserResponseDto } from '../shared/user/dto/user-response.dto.js';
+import type { User } from '../shared/user/schemas/user.schema.js';
+import { UserService } from '../shared/user/user.service.js';
 
 @Injectable()
 export class AuthService {
@@ -16,10 +18,10 @@ export class AuthService {
     private readonly config: ConfigService,
     private readonly userService: UserService,
     private readonly studentService: StudentService,
-  ) { }
+  ) {}
 
   /** Handles registration of both Student and User, returns tokens */
-  async register(dto: RegisterDto): Promise<{ student: any; user: any; tokens: JwtSign }> {
+  async register(dto: RegisterDto): Promise<{ student: StudentResponseDto; user: UserResponseDto; tokens: JwtSign }> {
     // 1) Create student record
     const student = await this.studentService.create({
       studentCode: dto.studentCode,
@@ -34,12 +36,12 @@ export class AuthService {
     const user = await this.userService.create({
       email: dto.email,
       password: dto.password,
-      studentId: student._id.toString(),
+      studentId: dto.studentCode,
     });
 
     // 3) Issue tokens
     const payload: JwtPayload = {
-      sub: student._id.toString(),
+      sub: student.studentCode,
       username: user.email,
       roles: [user.role],
     };
@@ -62,12 +64,8 @@ export class AuthService {
    * Returns both access_token and refresh_token.
    */
   async login(dto: LoginDto): Promise<JwtSign> {
-
     // 1. Validate credentials
-    const user: User | null = await this.userService.validateUser(
-      dto.login,
-      dto.password,
-    );
+    const user: User | null = await this.userService.validateUser(dto.login, dto.password);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -98,10 +96,10 @@ export class AuthService {
    */
   validateRefreshToken(data: Payload, refreshToken: string): boolean {
     try {
-      const verified = this.jwt.verify(refreshToken, {
+      const verified = this.jwt.verify<Payload>(refreshToken, {
         secret: this.config.get<string>('jwtRefreshSecret'),
       });
-      return verified.sub === data.userId;
+      return verified.userId === data.userId;
     } catch {
       return false;
     }
@@ -113,7 +111,6 @@ export class AuthService {
   getPayload(token: string): Payload | null {
     try {
       const p = this.jwt.decode<JwtPayload>(token);
-      if (!p) return null;
       return {
         userId: p.sub,
         username: p.username,

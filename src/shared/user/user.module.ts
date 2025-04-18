@@ -7,9 +7,14 @@ import { UsersController } from './users.controller.js';
 import { Student, StudentSchema } from '../../core/student/schemas/student.schema.js';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }, { name: Student.name, schema: StudentSchema },])],
+  imports: [
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: Student.name, schema: StudentSchema },
+    ]),
+  ],
   controllers: [UsersController],
-  providers: [UserService,],
+  providers: [UserService],
   exports: [UserService],
 })
-export class UserModule { }
+export class UserModule {}

@@ -10,14 +10,8 @@ const services = Object.values(providers);
 @Global()
 @Module({
   imports: [AuthModule, LoggerModule],
-  providers: [
-    ...services,
-    LoggerContextMiddleware,
-  ],
-  exports: [
-    ...services,
-    LoggerContextMiddleware,
-  ],
+  providers: [...services, LoggerContextMiddleware],
+  exports: [...services, LoggerContextMiddleware],
 })
 export class CommonModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {

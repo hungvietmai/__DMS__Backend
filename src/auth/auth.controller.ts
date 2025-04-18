@@ -1,18 +1,12 @@
 // src/auth/auth.controller.ts
-import {
-  Controller,
-  Post,
-  Body,
-  Request,
-  UseGuards,
-  Get,
-} from '@nestjs/common';
+import { Controller, Post, Body, Request, UseGuards, Get } from '@nestjs/common';
+import type { Request as ExpressRequest } from 'express';
+
 import { AuthService } from './auth.service.js';
 import { LoginDto } from './dto/login.dto.js';
-import { UserService } from '../shared/user/user.service.js';
-import type { Request as ExpressRequest } from 'express';
-import { JwtAuthGuard, LocalAuthGuard } from './guards/index.js';
 import { RegisterDto } from './dto/register.dto.js';
+import { JwtAuthGuard, LocalAuthGuard } from './guards/index.js';
+import { UserService } from '../shared/user/user.service.js';
 
 interface RequestWithUser extends ExpressRequest {
   user: { userId: string; username: string; roles: string[] };
@@ -23,7 +17,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private userService: UserService,
-  ) { }
+  ) {}
 
   @Post('register')
   register(@Body() dto: RegisterDto) {

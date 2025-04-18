@@ -6,7 +6,7 @@ import { ServiceCatalogService } from './service-catalog.service.js';
 
 @Controller('service-catalog')
 export class ServiceCatalogController {
-  constructor(private readonly svc: ServiceCatalogService) { }
+  constructor(private readonly svc: ServiceCatalogService) {}
 
   @Post()
   create(@Body() dto: CreateServiceCatalogDto) {

@@ -1,12 +1,12 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 
+import type { CreateUserDto } from './dto/create-user.dto.js';
 import { User } from './schemas/user.schema.js';
 import { UserService } from './user.service.js';
-import type { CreateUserDto } from './dto/create-user.dto.js';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   async create(@Body() dto: CreateUserDto): Promise<Omit<User, 'passwordHash'>> {

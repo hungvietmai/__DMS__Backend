@@ -7,10 +7,10 @@ import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './auth/index.js';
 import { CommonModule, ExceptionsFilter, LoggerContextMiddleware } from './common/index.js';
 import { configuration, loggerOptions } from './config/index.js';
+import { ServiceCatalogModule } from './core/service-catalog/service-catalog.module.js';
 import { DatabaseModule } from './database/index.js';
 import { HealthModule } from './health/index.js';
 import { UserModule } from './shared/user/index.js';
-import { ServiceCatalogModule } from './core/service-catalog/service-catalog.module.js';
 
 @Module({
   imports: [
@@ -40,7 +40,7 @@ import { ServiceCatalogModule } from './core/service-catalog/service-catalog.mod
 
     UserModule,
 
-    ServiceCatalogModule
+    ServiceCatalogModule,
   ],
   providers: [
     {
