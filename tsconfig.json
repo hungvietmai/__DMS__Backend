@@ -26,8 +26,10 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
-  },
-  "include": ["typings/global.d.ts", "src/**/*", "test/**/*", "bin/**/*"],
-  "exclude": ["node_modules"]
+    "skipLibCheck": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    }
+  }
 }

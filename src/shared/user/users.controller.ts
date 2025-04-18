@@ -2,18 +2,19 @@ import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 
 import { User } from './schemas/user.schema.js';
 import { UserService } from './user.service.js';
+import type { CreateUserDto } from './dto/create-user.dto.js';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
-  create(@Body() dto: { name: string; email: string; roles: string[] }): Promise<User> {
+  async create(@Body() dto: CreateUserDto): Promise<Omit<User, 'passwordHash'>> {
     return this.userService.create(dto);
   }
 
   @Get()
-  findAll(): Promise<User[]> {
+  findAll(): Promise<Omit<User, 'passwordHash'>[]> {
     return this.userService.findAll();
   }
 

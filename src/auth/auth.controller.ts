@@ -1,31 +1,45 @@
-import { Controller, Get, Post, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
-import type { FastifyRequest } from 'fastify';
-
+// src/auth/auth.controller.ts
+import {
+  Controller,
+  Post,
+  Body,
+  Request,
+  UseGuards,
+  Get,
+} from '@nestjs/common';
 import { AuthService } from './auth.service.js';
+import { LoginDto } from './dto/login.dto.js';
+import { UserService } from '../shared/user/user.service.js';
+import type { Request as ExpressRequest } from 'express';
 import { JwtAuthGuard, LocalAuthGuard } from './guards/index.js';
-import type { User } from '../shared/user/index.js';
+import type { RegisterDto } from './dto/register.dto.js';
 
-@Controller()
+interface RequestWithUser extends ExpressRequest {
+  user: { userId: string; username: string; roles: string[] };
+}
+
+@Controller('auth')
 export class AuthController {
-  constructor(private auth: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+  ) { }
+
+  @Post('register')
+  register(@Body() dto: RegisterDto) {
+    return this.authService.register(dto);
+  }
 
   @UseGuards(LocalAuthGuard)
-  @Post('auth/login')
-  public login(@Req() req: FastifyRequest): { access_token: string } {
-    const user = req.user;
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-    return this.auth.login(user);
+  @Post('login')
+  login(@Request() req: RequestWithUser) {
+    // req.user set by LocalStrategy
+    return this.authService.login(req.body as LoginDto);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('auth/check')
-  public check(@Req() req: FastifyRequest): User {
-    const user = req.user;
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-    return user;
+  @Get('me')
+  me(@Request() req: RequestWithUser) {
+    return this.userService.findById(req.user.userId);
   }
 }

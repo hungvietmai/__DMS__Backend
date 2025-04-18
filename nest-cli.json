@@ -11,13 +11,17 @@
       {
         "name": "@nestjs/swagger",
         "options": {
-          "introspectComments": true,
-          "esmCompatible": true
+          "esmCompatible": true,
+          "classValidatorShim": true
         }
       }
     ]
   },
   "watchOptions": {
-    "ignored": ["**/node_modules/**", "**/*.spec.ts", "dist/**"]
+    "ignored": [
+      "**/node_modules/**",
+      "**/*.spec.ts",
+      "dist/**"
+    ]
   }
 }

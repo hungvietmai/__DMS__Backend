@@ -10,11 +10,16 @@ const services = Object.values(providers);
 @Global()
 @Module({
   imports: [AuthModule, LoggerModule],
-  providers: services,
-  exports: services,
+  providers: [
+    ...services,
+    LoggerContextMiddleware,
+  ],
+  exports: [
+    ...services,
+    LoggerContextMiddleware,
+  ],
 })
 export class CommonModule implements NestModule {
-  // Global Middleware
   public configure(consumer: MiddlewareConsumer): void {
     consumer.apply(LoggerContextMiddleware).forRoutes('*');
   }

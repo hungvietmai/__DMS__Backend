@@ -2,11 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Query, Delete } from '@nestj
 
 import type { CreateServiceCatalogDto } from './dto/create-service-catalog.dto.js';
 import type { UpdateServiceCatalogDto } from './dto/update-service-catalog.dto.js';
-import type { ServiceCatalogService } from './service-catalog.service.js';
+import { ServiceCatalogService } from './service-catalog.service.js';
 
 @Controller('service-catalog')
 export class ServiceCatalogController {
-  constructor(private readonly svc: ServiceCatalogService) {}
+  constructor(private readonly svc: ServiceCatalogService) { }
 
   @Post()
   create(@Body() dto: CreateServiceCatalogDto) {

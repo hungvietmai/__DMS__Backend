@@ -10,6 +10,7 @@ import { configuration, loggerOptions } from './config/index.js';
 import { DatabaseModule } from './database/index.js';
 import { HealthModule } from './health/index.js';
 import { UserModule } from './shared/user/index.js';
+import { ServiceCatalogModule } from './core/service-catalog/service-catalog.module.js';
 
 @Module({
   imports: [
@@ -28,14 +29,18 @@ import { UserModule } from './shared/user/index.js';
 
     // Global
     CommonModule,
+
     // Terminus
     HealthModule,
+
     // Authentication
     AuthModule,
 
     DatabaseModule,
 
     UserModule,
+
+    ServiceCatalogModule
   ],
   providers: [
     {
